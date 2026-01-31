@@ -6,7 +6,7 @@ class DecisionEngine:
             self.software_info = json.load(f)
 
     def theoretical_compatibility_test(self, target_app, scraper_data):
-        target_info = self.software_info.get(target_app) # Virgül silindi!
+        target_info = self.software_info.get(target_app) 
         if not target_info:
             return False, ["Application not found in database."]
         
@@ -93,6 +93,8 @@ class DecisionEngine:
             performance_score -= 25
             warnings.append("System on battery. Power is throttled. Plug in for max performance!")
         
+        # TODO: I think there is no need to decrease the score for battery percentage and plugged.
+
         if benchmark_data.get("battery_percent", 100) <= 20:
             performance_score -= 15
             warnings.append("Battery is critical (<20%). High-performance mode is disabled.")

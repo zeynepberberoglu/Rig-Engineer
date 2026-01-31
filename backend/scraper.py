@@ -48,7 +48,7 @@ class HardwareScraper:
         static = self.get_static_info()
         dynamic = self.get_dynamic_info()
         gpus = self._get_gpu_info() # Retrieves GPU list from GPUtil
-        
+
         # If the GPU list is not empty, retrieve details from the primary card
         if gpus:
             first_gpu = gpus[0]

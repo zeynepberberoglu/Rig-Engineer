@@ -63,8 +63,9 @@ class BenchmarkEngine:
             st.get_best_server()
             download_speed = st.download() / 1_000_000 # Mbps
             ping = st.results.ping
-            return {"download_mbps": round(download_speed, 2), "ping_ms": ping}
-        except:
+            return {"download_mbps": int(download_speed), "ping_ms": ping} 
+        except Exception as e:
+            print(f"[ERROR] Network test failed: {e}")
             return {"download_mbps": 0, "ping_ms": 0}
 
     def get_battery_health(self):

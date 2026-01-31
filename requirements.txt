@@ -1,7 +1,5 @@
 psutil
-
 GPUtil
-
 PyQt6
-
-speedtest
+speedtest-cli
+setuptools

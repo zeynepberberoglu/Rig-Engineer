@@ -1,0 +1,1 @@
+Get-ChildItem -Path "HKLM:\SYSTEM\ControlSet001\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}" -ErrorAction SilentlyContinue | Get-ItemProperty | Select-Object DriverDesc, HardwareInformation.QwMemorySize | ConvertTo-Csv -NoTypeInformation

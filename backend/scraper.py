@@ -1,6 +1,8 @@
+import os
 import psutil
 import platform
 import GPUtil
+import subprocess
 
 class HardwareScraper:
     def __init__(self):
@@ -25,20 +27,67 @@ class HardwareScraper:
 
 
     def _get_gpu_info(self):
-        """Checks for available GPUs and returns their current info as a list of dicts."""
+        """Checks for available GPUs and returns details."""
         try:
             gpus = GPUtil.getGPUs()
 
-            return [
-                {
-                    "name": g.name, 
-                    "load": g.load * 100, 
-                    "temp": g.temperature,
-                    "memoryTotal": g.memoryTotal 
-                } for g in gpus
-            ]
+            if gpus:
+                return [
+                    {
+                        "name": g.name, 
+                        "load": g.load * 100, 
+                        "temp": g.temperature,
+                        "memoryTotal": g.memoryTotal 
+                    } for g in gpus
+                ]
         except Exception:
-            return []
+            pass
+
+        if not gpus:
+            try:
+                # Get absolute path to the PowerShell script in the same directory
+                current_dir = os.path.dirname(os.path.abspath(__file__))
+                script_path = os.path.join(current_dir, "get_vram.ps1")
+                
+                cmd = f'powershell -ExecutionPolicy Bypass -File "{script_path}"'
+                output = subprocess.check_output(cmd,shell=True).decode("utf-8").strip()
+
+
+                lines = output.split("\n")
+                for line in lines:
+                    line = line.replace('"', '').strip()
+                    
+                    # Skip empty lines or the Header line (DriverDesc)
+                    if not line or "DriverDesc" in line:
+                        continue
+                        
+                    parts = line.split(",")
+                    
+                    if len(parts) >= 2:
+                        try:
+                            # 1. WMI'dan gelen Byte'ı MB'a çeviriyoruz (1024^2)
+                            # parts[1] (QwMemorySize) string olduğu için int() ile çevir
+                            ram_bytes = int(parts[1])
+                            vram_mb = ram_bytes / (1024**2) 
+                        except:
+                            vram_mb = 0
+
+                        # parts[0] -> DriverDesc (Name)
+                        name = parts[0].strip()
+                            
+                        return[
+                            {
+                            "name": name,
+                            "load": "N/A", 
+                            "temp": "N/A", 
+                            "memoryTotal": vram_mb,
+                            }
+                        ]
+            except Exception as e:
+                print(f"WMI Error: {e}")
+        
+        return gpus
+            
         
     def get_available_ram(self):
         """Retrieves currently available system memory."""

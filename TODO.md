@@ -5,7 +5,7 @@
 
 ## 🚀 Backend
 - [ ] Getting AMD and Intel Graphics Card Info
-- [ ] 
+- [ ] Fixing the processor name
 
 ## 🎨 Frontend
 - [ ] 

@@ -1,9 +1,11 @@
+import this
 try:
     import sys
     import time
     from backend.scraper import HardwareScraper
     from backend.benchmark import BenchmarkEngine
     from backend.logic import DecisionEngine
+
 except ImportError as e:
     print(f"Import Error: {e}")
     print("Make sure your files are in the 'backend' folder with an '__init__.py' file.")

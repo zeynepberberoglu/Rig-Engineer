@@ -11,10 +11,21 @@ class HardwareScraper:
 
     def get_static_info(self):
         """Retrieves static system information such as CPU model and total RAM."""
+        try:
+            cpu_name = subprocess.check_output("wmic cpu get name", shell=True).decode().split('\n')[1].strip()
+        except Exception:
+            cpu_name = platform.processor()
+
+        os_base = platform.system()
+        if os_base == "Windows":
+            os_name = f"{os_base} {platform.release()}"
+        else:
+            os_name = os_base
+
         return {
-            "processor": platform.processor(),
+            "processor": cpu_name,
             "total_ram_gb": round(psutil.virtual_memory().total / (1024**3), 2),
-            "os": platform.system()
+            "os": os_name
         }
     
     def get_dynamic_info(self):
@@ -43,7 +54,7 @@ class HardwareScraper:
         except Exception:
             pass
 
-        if not gpus:
+        if platform.system() == "Windows" and not gpus:
             try:
                 # Get absolute path to the PowerShell script in the same directory
                 current_dir = os.path.dirname(os.path.abspath(__file__))

@@ -1,0 +1,7 @@
+psutil
+
+GPUtil
+
+PyQt6
+
+speedtest

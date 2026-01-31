@@ -1,0 +1,20 @@
+{
+    "AutoCAD": {
+        "min_ram": 8,
+        "min_vram": 2,
+        "os_version": "Windows 10"
+
+    },
+    "SolidWorks": {
+        "min_ram": 16,
+        "min_vram": 4,
+        "os_version": "Windows 11"
+
+    },
+    "MATLAB": {
+        "min_ram": 8,
+        "min_vram": 0,
+        "os_version": "Any"
+       
+    }
+}

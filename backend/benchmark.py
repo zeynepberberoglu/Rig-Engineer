@@ -19,20 +19,20 @@ class BenchmarkEngine:
         primes = []
         # This optimization significantly reduces CPU cycles during benchmarking.
         for num in range(2, limit): 
-            for i in range(2, int(num**0.5) + 1): #A number is prime if it is not divisible by any integer up to its square root.
+            for i in range(2, int(num**0.5) + 1): # A number is prime if it is not divisible by any integer up to its square root.
                 if (num % i) == 0:
                     break
             else:
                 primes.append(num)
                 
         end_time = time.time()
-        duration = round(end_time - start_time, 4) #Rounding duration to 4 decimal places for clean data reporting and UI display.
+        duration = round(end_time - start_time, 4) # Rounding duration to 4 decimal places for clean data reporting and UI display.
         return duration
 
     def run_ram_latency_test(self, size=10**6):
         """
         Performs a synthetic memory stress test by allocating a large integer list and executing 
-        bulk operations. This measures RAM write/read speeds and memory bus latency
+        bulk operations. This measures RAM write/read speeds and memory bus latency.
         """
         start_time = time.time()
         
@@ -42,8 +42,6 @@ class BenchmarkEngine:
         
         end_time = time.time()
         return round(end_time - start_time, 4)
-    
-
 
     def run_disk_test(self):
         """Measures Disk Write Speed by creating a temporary 100MB file."""
@@ -58,7 +56,6 @@ class BenchmarkEngine:
         os.remove(file_name) # Cleanup
         end_time = time.time()
         return round(end_time - start_time, 4)
-    
 
     def run_network_test(self):
         try:
@@ -69,10 +66,8 @@ class BenchmarkEngine:
             return {"download_mbps": round(download_speed, 2), "ping_ms": ping}
         except:
             return {"download_mbps": 0, "ping_ms": 0}
-    
 
     def get_battery_health(self):
-    
         """Returns battery percentage and power plug status."""
         battery = psutil.sensors_battery()
         if battery:
@@ -105,3 +100,26 @@ class BenchmarkEngine:
         
         # Return the stability percentage rounded for clean reporting
         return round(stability, 2)
+
+    def run_all_benchmarks(self):
+        # Step 1: Run all tests sequentially (this may take some time)
+        cpu_time = self.run_cpu_stress_test()
+        ram_time = self.run_ram_latency_test()
+        disk_time = self.run_disk_test()
+        stability = self.run_thermal_stability_test()
+        network = self.run_network_test()
+        battery = self.get_battery_health()
+
+        # Step 2: Pack the data into a standardized dictionary
+        benchmark_data = {
+            "cpu_stress_time": cpu_time,         
+            "ram_test_speed": ram_time,          
+            "disk_test_speed": disk_time,        
+            "thermal_deviation": round(100 - stability, 2), # Calculated by subtracting stability from 100
+            "network_test_speed": network["ping_ms"], 
+            "is_plugged": battery["power_plugged"] if battery else True,
+            "battery_percent": battery["percent"] if battery else 100,
+            "battery_secs_left": battery["seconds_left"] if battery else -1
+        }
+        
+        return benchmark_data

@@ -14,7 +14,7 @@ class HardwareScraper:
         return {
             "processor": platform.processor(),
             "total_ram_gb": round(psutil.virtual_memory().total / (1024**3), 2),
-            "os": platform.system()
+            "os": f"{platform.system()} {platform.release()}"
         }
     
     def get_dynamic_info(self):

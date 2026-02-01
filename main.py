@@ -40,16 +40,16 @@ def main():
     print(f"\n STEP 1- Scanning hardware for {target_app}...")
     print("This will take about 20-30 seconds. Please wait...")
 
-    hasPassed , problems = logic.theoretical_compatibility_test(target_app,scraper_data)
+    hasPassed , messages = logic.theoretical_compatibility_test(target_app,scraper_data)
 
     if hasPassed == False:
-        print(problems)
+        print(messages)
         sys.exit()
     elif hasPassed==True:
-        print("Passed the first test")
+        print("Passed the first test\n")
     
 
-
+    print("STEP 2- Running Benchmarks...")
     benchmark = BenchmarkEngine()
     bench_results = benchmark.run_all_benchmarks() #data paketini al
 

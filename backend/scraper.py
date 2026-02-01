@@ -36,6 +36,25 @@ class HardwareScraper:
             "gpu_status": self._get_gpu_info()
         }
 
+    def get_disk_info(self):
+        #Finds all disk partitions and their free space
+        disks = []
+        partitions = psutil.disk_partitions()
+        for p in partitions:
+            try:
+                usage = psutil.disk_usage(p.mountpoint)
+                free_gb = round(usage.free / (1024**3), 2)
+                disks.append({
+                    "device" : p.device,
+                    "mountpoint": p.mountpoint,
+                    "fstype": p.fstype,
+                    "free_gb": free_gb,
+                    "total_gb": round(usage.total / (1024**3), 2)
+                })
+            except PermissionError:
+                continue
+        return disks
+
 
     def _get_gpu_info(self):
         """Checks for available GPUs and returns details."""
@@ -129,6 +148,7 @@ class HardwareScraper:
             "total_ram_gb": static["total_ram_gb"],
             "available_ram_gb": self.get_available_ram(),
             "vram_gb": vram_gb,
-            "is_dedicated": is_dedicated
+            "is_dedicated": is_dedicated,
+            "disks": self.get_disk_info()
         }
         return scraper_data

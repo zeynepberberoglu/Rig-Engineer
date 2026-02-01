@@ -7,7 +7,7 @@
 - [x] Getting AMD and Intel Graphics Card Info
 - [x] Fixing the processor name
 - [ ] add a function that finds the “5 most resource-intensive processes” (e.g., Chrome, Android Studio).
-- [ ] Check disk space
+- [x] Check disk space (Scans all drives)
 - [ ] OS problem
 
 Logic changes

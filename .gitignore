@@ -1,11 +1,13 @@
-# Python
+# Python bytecode
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
 
-# Virtual Environment
+# Environments
 .venv/
-venv/
 env/
+venv/
+
 
 # IDE settings
 .vscode/

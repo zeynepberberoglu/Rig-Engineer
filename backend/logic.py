@@ -1,3 +1,5 @@
+from speedtest import print_
+import platform
 import json
 
 class DecisionEngine:
@@ -22,8 +24,21 @@ class DecisionEngine:
             problems.append(f"Insufficient VRAM: {req_vram}GB required.")
 
         os_name = scraper_data.get("os_name", "")
-        if req_os != "Any" and req_os != os_name:
-            problems.append(f"OS Mismatch: {req_os} required.")
+        if platform.system() == "Windows":
+            if "Windows" in os_name and "Windows" in req_os:
+                try:
+                    current_v = int(''.join(filter(str.isdigit, os_name)))
+                    req_v = int(''.join(filter(str.isdigit, req_os)))
+                    
+                    if current_v < req_v:
+                        problems.append(f"OS Mismatch: {req_os} or newer required.")
+                except:
+                    if req_os != os_name:
+                        problems.append(f"OS Mismatch: {req_os} required.")
+            elif req_os != os_name:
+                problems.append(f"OS Mismatch: {req_os} required.")
+        else:
+            print("Unsupported OS: Analysis targets Windows systems. Your OS ({os_name}) is incompatible.")
             
         if problems:
             return False, problems

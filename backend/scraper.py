@@ -11,10 +11,21 @@ class HardwareScraper:
 
     def get_static_info(self):
         """Retrieves static system information such as CPU model and total RAM."""
+        try:
+            cpu_name = subprocess.check_output("wmic cpu get name", shell=True).decode().split('\n')[1].strip()
+        except Exception:
+            cpu_name = platform.processor()
+
+        os_base = platform.system()
+        if os_base == "Windows":
+            os_name = f"{os_base} {platform.release()}"
+        else:
+            os_name = os_base
+
         return {
-            "processor": platform.processor(),
+            "processor": cpu_name,
             "total_ram_gb": round(psutil.virtual_memory().total / (1024**3), 2),
-            "os": f"{platform.system()} {platform.release()}"
+            "os": os_name
         }
     
     def get_dynamic_info(self):
@@ -24,6 +35,25 @@ class HardwareScraper:
             "ram_usage_pct": psutil.virtual_memory().percent,
             "gpu_status": self._get_gpu_info()
         }
+
+    def get_disk_info(self):
+        #Finds all disk partitions and their free space
+        disks = []
+        partitions = psutil.disk_partitions()
+        for p in partitions:
+            try:
+                usage = psutil.disk_usage(p.mountpoint)
+                free_gb = round(usage.free / (1024**3), 2)
+                disks.append({
+                    "device" : p.device,
+                    "mountpoint": p.mountpoint,
+                    "fstype": p.fstype,
+                    "free_gb": free_gb,
+                    "total_gb": round(usage.total / (1024**3), 2)
+                })
+            except PermissionError:
+                continue
+        return disks
 
 
     def _get_gpu_info(self):
@@ -43,7 +73,7 @@ class HardwareScraper:
         except Exception:
             pass
 
-        if not gpus:
+        if platform.system() == "Windows" and not gpus:
             try:
                 # Get absolute path to the PowerShell script in the same directory
                 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -118,6 +148,7 @@ class HardwareScraper:
             "total_ram_gb": static["total_ram_gb"],
             "available_ram_gb": self.get_available_ram(),
             "vram_gb": vram_gb,
-            "is_dedicated": is_dedicated
+            "is_dedicated": is_dedicated,
+            "disks": self.get_disk_info()
         }
         return scraper_data

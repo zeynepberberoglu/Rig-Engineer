@@ -1,20 +1,82 @@
 {
-    "AutoCAD": {
+    "AutoCAD 2026": {
         "min_ram": 8,
+        "rec_ram": 32,
         "min_vram": 2,
+        "rec_vram": 8,
+        "min_storage": 10,
         "os_version": "Windows 10"
-
     },
-    "SolidWorks": {
+    "Revit 2026": {
         "min_ram": 16,
+        "rec_ram": 32,
         "min_vram": 4,
+        "rec_vram": 6,
+        "min_storage": 30,
+        "os_version": "Windows 10"
+    },
+    "Fusion 360": {
+        "min_ram": 4,
+        "rec_ram": 8,
+        "min_vram": 1,
+        "rec_vram": 6,
+        "min_storage": 9,
+        "os_version": "Windows 10"
+    },
+    "Blender": {
+        "min_ram": 8,
+        "rec_ram": 32,
+        "min_vram": 2,
+        "rec_vram": 8,
+        "min_storage": 3,
+        "os_version": "Windows 8.1"
+    },
+    "Ansys": {
+        "min_ram": 8,
+        "rec_ram": 32,
+        "min_vram": 4,
+        "rec_vram": 8,
+        "min_storage": 50,
+        "os_version": "Windows 10"
+    },
+    "Altium Designer": {
+        "min_ram": 16,
+        "rec_ram": 16,
+        "min_vram": 2,
+        "rec_vram": 4,
+        "min_storage": 10,
         "os_version": "Windows 11"
-
+    },
+    "Android Studio": {
+        "min_ram": 8,
+        "rec_ram": 16,
+        "min_vram": 2,
+        "rec_vram": 4,
+        "min_storage": 8,
+        "os_version": "Windows 10"
+    },
+    "Unreal Engine 5": {
+        "min_ram": 8,
+        "rec_ram": 64,
+        "min_vram": 4,
+        "rec_vram": 8,
+        "min_storage": 100,
+        "os_version": "Windows 10"
     },
     "MATLAB": {
         "min_ram": 8,
-        "min_vram": 0,
+        "rec_ram": 16,
+        "min_vram": 2,
+        "rec_vram": 4,
+        "min_storage": 24,
         "os_version": "Any"
-       
+    },
+    "SolidWorks": {
+        "min_ram": 16,
+        "rec_ram": 32,
+        "min_vram": 4,
+        "rec_vram": 8,
+        "min_storage": 20,
+        "os_version": "Windows 10"
     }
 }

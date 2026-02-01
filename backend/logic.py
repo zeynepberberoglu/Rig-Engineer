@@ -1,3 +1,4 @@
+import re
 import platform
 import json
 
@@ -9,7 +10,7 @@ class DecisionEngine:
     def theoretical_compatibility_test(self, target_app, scraper_data):
         target_info = self.software_info.get(target_app) 
         if not target_info:
-            return False, ["Application not found in database."]
+            return False, ["Application not found in database."], []
         
         req_ram = target_info.get("min_ram", 0) 
         req_vram = target_info.get("min_vram", 0) 
@@ -43,12 +44,20 @@ class DecisionEngine:
                 pass # Herhangi bir Windows sürümü kabul
             elif "Windows" in os_name and "Windows" in req_os:
                 try:
-                    # Sadece sayıları alıp karşılaştırıyoruz (Örn: "Windows 10" -> 10)
-                    current_v = int(''.join(filter(str.isdigit, os_name)))
-                    req_v = int(''.join(filter(str.isdigit, req_os)))
+                    # Sadece sayıları alıp karşılaştırıyoruz (Örn: "Windows 10" -> 10, "Windows 8.1" -> 8.1)
+                    current_v_match = re.search(r"(\d+(?:\.\d+)?)", os_name)
+                    req_v_match = re.search(r"(\d+(?:\.\d+)?)", req_os)
                     
-                    if current_v < req_v:
-                        problems.append(f"OS Mismatch: {req_os} or newer required.")
+                    if current_v_match and req_v_match:
+                        current_v = float(current_v_match.group(1))
+                        req_v = float(req_v_match.group(1))
+                        
+                        if current_v < req_v:
+                            problems.append(f"OS Mismatch: {req_os} or newer required.")
+                    else:
+                        raise ValueError("Could not extract version numbers")
+                    
+
                 except:
                     # Sayı bulunamazsa klasik string kontrolüne dön
                     if req_os != os_name:
@@ -56,16 +65,12 @@ class DecisionEngine:
             elif req_os != os_name:
                 problems.append(f"OS Mismatch: {req_os} required.")
         else:
-            print("Unsupported OS: Analysis targets Windows systems. Your OS ({os_name}) is incompatible.")
+            messages.append("Unsupported OS: Analysis targets Windows systems. Your OS ({os_name}) is incompatible.")
             
         if problems:
-            return False, problems
+            return False, problems, messages
             
-        if messages:
-            for msg in messages:
-                print(msg)
-        
-        return True, []
+        return True, [], messages
 
 
     def calculate_performance_score(self, target_app, scraper_data, benchmark_data):

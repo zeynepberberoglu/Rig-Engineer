@@ -137,9 +137,11 @@ class HardwareScraper:
         if gpus:
             first_gpu = gpus[0] #gpus is a dict
             vram_gb = round(first_gpu["memoryTotal"] / 1024, 1) 
+            gpu_name = first_gpu.get("name", "Unknown GPU")
             is_dedicated = True
         else:
             vram_gb = 0 
+            gpu_name = "Integrated Graphics / Unknown"
             is_dedicated = False
 
         scraper_data = {
@@ -148,6 +150,7 @@ class HardwareScraper:
             "total_ram_gb": static["total_ram_gb"],
             "available_ram_gb": self.get_available_ram(),
             "vram_gb": vram_gb,
+            "gpu_name": gpu_name,
             "is_dedicated": is_dedicated,
             "disks": self.get_disk_info()
         }

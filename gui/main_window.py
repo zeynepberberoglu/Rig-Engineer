@@ -179,7 +179,8 @@ class MainWindow(QMainWindow):
         self.scraper_data = data
         
         # Check compatibility first
-        hasPassed, problems = self.logic.theoretical_compatibility_test(self.selected_app, data)
+        hasPassed, problems, messages = self.logic.theoretical_compatibility_test(self.selected_app, data)
+        self.messages = messages
         
         if not hasPassed:
             self.show_failure(problems)
@@ -224,12 +225,15 @@ class MainWindow(QMainWindow):
         cpu = self.scraper_data.get("processor", "Unknown")
         ram = self.scraper_data.get("available_ram_gb", 0)
         total_ram = self.scraper_data.get("total_ram_gb", 0)
-        gpu_vram = self.scraper_data.get("vram_gb", 0)
+        gpu = self.scraper_data.get("gpu_name", "Unknown GPU")
+        vram = self.scraper_data.get("vram_gb", 0)
+        os_name = self.scraper_data.get("os_name", "Unknown OS")
         
         self.specs_label.setText(
+            f"OS: {os_name}\n"
             f"CPU: {cpu}\n"
-            f"RAM: {ram:.1f}GB Available (Total: {total_ram}GB)\n"
-            f"VRAM: {gpu_vram}GB"
+            f"GPU: {gpu} ({vram}GB VRAM)\n"
+            f"RAM: {ram:.1f}GB Available (Total: {total_ram}GB)"
         )
         
         # Clear old warnings
@@ -239,11 +243,17 @@ class MainWindow(QMainWindow):
             if widget:
                 widget.deleteLater()
         
+        # Add messages (Info)
+        if self.messages:
+            for msg in self.messages:
+                self.add_warning_card(msg, is_warning=False)
+
         # Add new warnings
         if warnings:
             for w in warnings:
                 self.add_warning_card(w, is_warning=True)
-        else:
+        
+        if not warnings and not self.messages:
             self.add_warning_card("No critical warnings. System is optimized!", is_warning=False)
 
     def add_warning_card(self, text, is_warning=True):

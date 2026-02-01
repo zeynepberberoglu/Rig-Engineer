@@ -90,6 +90,10 @@ class MainWindow(QMainWindow):
         self.progress_bar.setFixedWidth(500)
         self.progress_bar.setRange(0, 0) # Indeterminate
         layout.addWidget(self.progress_bar, alignment=Qt.AlignmentFlag.AlignCenter)
+
+        self.status_label_dynamic = QLabel("CPU: ... | RAM: ...")
+        self.status_label_dynamic.setStyleSheet("color: #03DAC6; font-size: 14px; margin-top: 10px;")
+        layout.addWidget(self.status_label_dynamic, alignment=Qt.AlignmentFlag.AlignCenter)
         
         self.stacked_widget.addWidget(self.loading_page)
 
@@ -175,6 +179,25 @@ class MainWindow(QMainWindow):
         self.scraper_thread.finished.connect(self.on_scraper_finished)
         self.scraper_thread.start()
 
+        # Start Dynamic Stats Timer
+        self.stats_timer = QTimer()
+        self.stats_timer.timeout.connect(self.update_dynamic_stats)
+        self.stats_timer.start(1000) # Update every 1s
+
+    def update_dynamic_stats(self):
+        # We need a scraper instance to get dynamic info. 
+        # We can create a lightweight one or reuse. 
+        # Since ScraperWorker uses its own, let's make a temp one or make it static.
+        # For simplicity, we'll instantiate one here (low cost).
+        from backend.scraper import HardwareScraper
+        scraper = HardwareScraper()
+        dyn_info = scraper.get_dynamic_info()
+        
+        cpu = dyn_info.get("cpu_usage_pct", 0)
+        ram = dyn_info.get("ram_usage_pct", 0)
+        
+        self.status_label_dynamic.setText(f"System Load -> CPU: {cpu}% | RAM: {ram}%")
+
     def on_scraper_finished(self, data):
         self.scraper_data = data
         
@@ -193,6 +216,7 @@ class MainWindow(QMainWindow):
         self.benchmark_thread.start()
 
     def on_benchmark_finished(self, bench_results):
+        self.stats_timer.stop()
         self.benchmark_data = bench_results
         
         # Calculate Final Score

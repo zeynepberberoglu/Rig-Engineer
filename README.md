@@ -64,5 +64,5 @@ To run the project locally:
 3. **Run the application:**
 
    ```bash
-   python main.py
+   python python run_gui.py
    ```

@@ -50,24 +50,19 @@ The project is built entirely on **Python 3.x** and powers its analysis with the
 To run the project locally:
 
 1. **Clone the repository:**
+   
    ```bash
-   
-   git clone [https://github.com/zeynepberberoglu/Rig-Engineer.git](https://github.com/zeynepberberoglu/Rig-Engineer.git)
-   cd Rig-Engineer
-   
+   git clone https://github.com/zeynepberberoglu/Rig-Engineer.git
+   cd Rig-Engineer   
    ```
 2. **Install requirements:**
 
    ```bash
-
    pip install -r requirements.txt
-
    ```
 
 3. **Run the application:**
 
    ```bash
-
    python main.py
-
    ```
